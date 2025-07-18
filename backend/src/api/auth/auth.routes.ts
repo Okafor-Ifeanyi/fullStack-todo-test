@@ -12,17 +12,17 @@ export const authRouter: Router = express.Router();
 authRegistry.register("Auth", CreateUserSchema);
 
 authRegistry.registerPath({
-	method: "get",
-	path: "/auth/login",
+	method: "post",
+	path: "/login",
 	tags: ["Auth"],
-	responses: createApiResponse(z.array(CreateUserSchema), "Success"),
+	responses: createApiResponse(z.array(LoginUserSchema), "Success"),
 });
 
-authRouter.get("/login", validateRequest({ body: LoginUserSchema }), authController.login);
+authRouter.post("/login", validateRequest({ body: LoginUserSchema }), authController.login);
 
 authRegistry.registerPath({
-	method: "get",
-	path: "/auth/register",
+	method: "post",
+	path: "/register",
 	tags: ["Auth"],
 	request: {
         body: {
@@ -36,4 +36,4 @@ authRegistry.registerPath({
 	responses: createApiResponse(CreateUserSchema, "Success"),
 });
 
-authRouter.get("/register", validateRequest({ body: CreateUserSchema }), authController.register);
+authRouter.post("/register", validateRequest({ body: CreateUserSchema }), authController.register);

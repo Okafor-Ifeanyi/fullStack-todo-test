@@ -13,7 +13,9 @@ const prisma = new PrismaClient({
     timeout: 10000, // default: 5000
   },
   omit: {
-    
+    // user: {
+      // password: true, // Omit sensitive fields like password
+    // },
   },
 })
 

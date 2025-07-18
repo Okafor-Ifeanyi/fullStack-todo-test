@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import { logger } from "@/server";
-import prisma from "@/database/db";
 import { PrismaClient, User } from "@/generated/prisma";
 
 export class UserService {
@@ -46,7 +45,10 @@ export class UserService {
 	// Update user by ID
 	async updateById(id: number, data: Partial<User>): Promise<ServiceResponse<User | null>> {
 		try {
+			console.log("Updating user with ID:", id, "Data:", data);
 			const userExists = await this.prisma.user.findUnique({ where: { id } });
+			console.log("User exists:", userExists);
+			
 			if (!userExists) {
 				return ServiceResponse.failure("User not found", null, StatusCodes.NOT_FOUND);
 			}

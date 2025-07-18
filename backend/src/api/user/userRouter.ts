@@ -1,11 +1,11 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import express, { RequestHandler, type Router } from "express";
+import express, { type Router } from "express";
 import { z } from "zod";
-import { GetUserSchema, UserSchema,  } from "@/api/user/userModel";
+import { UpdateUserSchema, UserIdSchema, UserSchema,  } from "@/api/user/userModel";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import { validateRequest } from "@/common/utils/httpHandlers";
 import { userController } from "./userController";
-import { User } from "@/generated/prisma"
+import { isAuthorized } from "@/common/middleware/JwtAuth";
 
 export const userRegistry = new OpenAPIRegistry();
 export const userRouter: Router = express.Router();
@@ -25,26 +25,27 @@ userRegistry.registerPath({
 	method: "get",
 	path: "/users/{id}",
 	tags: ["User"],
-	request: { params: GetUserSchema.shape.params },
+	request: { params: UserIdSchema },
 	responses: createApiResponse(UserSchema, "Success"),
 });
 
-userRouter.get("/:id", validateRequest({ params: GetUserSchema }), userController.getUser);
-
 userRouter.get(
 	"/me", 
-	validateRequest({ params: GetUserSchema }), 
-	userController.getMyProfile as unknown as RequestHandler
+	isAuthorized,
+	userController.getMyProfile
 );
+userRouter.get("/:id", validateRequest({ params: UserIdSchema }), userController.getUser);
 
 userRouter.patch(
 	"/:id", 
-	validateRequest({ params: GetUserSchema }), 
-	userController.updateUser as unknown as RequestHandler
+	validateRequest({ params: UserIdSchema, body: UpdateUserSchema }), 
+	isAuthorized,
+	userController.updateUser
 );
 
 userRouter.delete(
 	"/:id", 
-	validateRequest({ params: GetUserSchema }), 
-	userController.deleteUser as unknown as RequestHandler
+	validateRequest({ params: UserIdSchema }), 
+	isAuthorized,
+	userController.deleteUser
 );

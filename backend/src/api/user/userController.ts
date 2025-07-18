@@ -1,7 +1,5 @@
 import type { Request, RequestHandler, Response } from "express";
-
 import { UserService } from "@/api/user/userService";
-import { User } from "@/generated/prisma";
 import prisma from "@/database/db";
 
 interface CustomReq extends Request {
@@ -31,13 +29,13 @@ class UserController {
 	public updateUser = async (req: CustomReq, res: Response) => {
 		const id = parseInt(req.userId!);
 		const userData = req.body;
-		const serviceResponse = await userService.findById(id);
+		const serviceResponse = await userService.updateById(id, userData);
 		res.status(serviceResponse.statusCode).send(serviceResponse);
 	};
 
 	public deleteUser = async (req: CustomReq, res: Response) => {
 		const id = parseInt(req.userId!);
-		const serviceResponse = await userService.findById(id);
+		const serviceResponse = await userService.deleteById(id);
 		res.status(serviceResponse.statusCode).send(serviceResponse);
 	};
 }

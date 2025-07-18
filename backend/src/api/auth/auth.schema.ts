@@ -9,14 +9,14 @@ export const CreateUserSchema = z
   .object({
     name: z.string(),
     email: z.string().email(),
-    password: z.number(),
+    password: z.string(),
   })
   .strict();
 
 export const LoginUserSchema = z
   .object({
     email: z.string().email(),
-    password: z.number(),
+    password: z.string(),
   })
   .strict();
 
