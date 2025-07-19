@@ -20,7 +20,19 @@ const envSchema = z.object({
 
 	PORT: z.coerce.number().int().positive().default(8080),
 
-	CORS_ORIGIN: z.string().url().default("http://localhost:8080"),
+	CORS_ORIGIN: z.preprocess(
+		(val) => {
+		  if (typeof val === 'string') {
+			try {
+			  return JSON.parse(val);
+			} catch {
+			  return [val]; // fallback if someone just enters a single string
+			}
+		  }
+		  return val;
+		},
+		z.array(z.string().url())
+	  ),
 
 	COMMON_RATE_LIMIT_MAX_REQUESTS: z.coerce.number().int().positive().default(1000),
 

@@ -7,8 +7,18 @@ import Layout from "./components/Global/Layout";
 import TasksView from "./pages/TasksPage";
 import CreateTaskForm from "./pages/TaskForm";
 import ProfilePage from "./pages/ProfilePage";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { loadAuthFromLocalStorage } from "./state/Store/authSlice";
+import type { AppDispatch } from "./state/store";
 
 function App() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(loadAuthFromLocalStorage());
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <Routes>

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { TaskTable } from "../components/Tasks/TaskTable";
 import { type Task, type TaskStatus } from "../types/task";
+import { useGetTasksQuery } from "../services/todo.service";
+import { handleApiError } from "../lib/errorHandler";
 
 const mockTasks: Task[] = [
   {
@@ -8,24 +10,35 @@ const mockTasks: Task[] = [
     title: "Finish report",
     description: "Complete the quarterly financial report",
     status: "PENDING",
-    dueDate: "2025-07-20",
+    userId: 1,
+    createdAt: "2025-07-01T10:00:00Z",
+    updatedAt: "2025-07-02T10:00:00Z",
   },
   {
     id: 2,
     title: "Team meeting",
     description: "Discuss sprint goals",
     status: "PENDING",
-    dueDate: "2025-07-15",
+    userId: 1,
+    createdAt: "2025-07-01T10:00:00Z",
+    updatedAt: "2025-07-02T10:00:00Z",
   },
 ];
 
 const TasksView: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | TaskStatus>("all");
+  const { data, isLoading, isError, error } = useGetTasksQuery();
 
+    if (isError) {
+        handleApiError(error);
+    }
+    
+    const tasks = data?.responseObject ?? [];
+    // data?.responseObject
   const filteredTasks =
     statusFilter === "all"
-      ? mockTasks
-      : mockTasks.filter((t) => t.status === statusFilter);
+      ? tasks
+      : tasks.filter((t) => t.status === statusFilter);
 
   return (
     <div className="p-6">
@@ -47,7 +60,12 @@ const TasksView: React.FC = () => {
         </select>
       </div>
 
-      <TaskTable
+      { filteredTasks.length === 0 && !isLoading ? (
+        <div className="text-gray-500">No tasks available.</div>
+      ) : isLoading ? (
+        <div className="text-gray-500">Loading tasks...</div>
+      ) : (
+        <TaskTable
         tasks={filteredTasks}
         onUpdate={(task) => {
           // open modal or redirect to edit page
@@ -58,6 +76,10 @@ const TasksView: React.FC = () => {
           console.log("Delete task with ID:", id);
         }}
       />
+      )
+
+      }
+      
     </div>
   );
 };

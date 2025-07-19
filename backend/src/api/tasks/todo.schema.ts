@@ -7,8 +7,9 @@ extendZodWithOpenApi(z);
 export const CreateTodoSchema = z
   .object({
     title: z.string(),
-    description: z.string().min(1).max(500),
-    status: z.enum(["PENDING", "IN_PROGRESS", "DONE"]),
+    description: z.string().min(1).max(500).optional(),
+    status: z.enum(["PENDING", "IN_PROGRESS", "DONE"]).optional(),
+    extras: z.record(z.any()).optional()
   })
   .strict();
 
