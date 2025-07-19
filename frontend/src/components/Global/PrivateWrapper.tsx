@@ -12,7 +12,11 @@ type Props = {
 const PrivateRouteWrapper = ({ component }: Props): ReactElement => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isLoggedIn);
 
-  if (isAuthenticated) {
+  if (typeof isAuthenticated === 'undefined') {
+    return <div>Loading...</div>; // or null / spinner
+  }
+  
+  if (!isAuthenticated) {
     toast.warning('Login to access this page')
     return <Navigate to="/login" replace />;
   }

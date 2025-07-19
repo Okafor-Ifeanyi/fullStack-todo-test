@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import NavButton from "./NavButton";
 import {
@@ -8,13 +8,25 @@ import {
   PersonIcon,
 } from "../../assets/svg/Icons";
 import { Toaster } from "sonner";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import { toTitleCase } from "../../lib/helpers";
 
 const Layout = () => {
+  const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const closeSidebar = () => setSidebarOpen(false);
+
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   const navItems = [
     {
@@ -24,7 +36,12 @@ const Layout = () => {
     },
     { to: "/create", icon: <CreateNewIcon width={24} />, label: "Create Task" },
     { to: "/profile", icon: <PersonIcon width={24} />, label: "Profile" },
-    { to: "/logout", icon: <LoveIcon width={24} />, label: "Logout" },
+    {
+      to: "/login",
+      icon: <LoveIcon width={24} />,
+      label: "Logout",
+      function: handleLogout,
+    },
   ];
 
   return (
@@ -52,6 +69,7 @@ const Layout = () => {
                   to={item.to}
                   icon={item.icon}
                   label={item.label}
+                  onClick={item.function}
                 />
               ))}{" "}
             </nav>
@@ -86,7 +104,7 @@ const Layout = () => {
 
           <div className="flex py-3 w-70 md:w-170 justify-between items-center md:justify-end">
             <h3 className="text-xl font-medium text-gray-800 mr-3">
-              Hello Ifeanyi
+              {/* Hello {toTitleCase(user.name)} */}
             </h3>
             <button
               className="rounded-lg border border-[#ACBCF0] bg-[#F1F4FF] p-1 md:p-2 md:mx-1"

@@ -5,6 +5,7 @@ export const users: User[] = [
 	{
 		id: 1,
 		name: "Alice",
+		avaatar: "https://example.com/avatar/alice.jpg",
 		email: "alice@example.com",
 		password: "password123",
 		createdAt: new Date(),
@@ -13,6 +14,7 @@ export const users: User[] = [
 	{
 		id: 2,
 		name: "Robert",
+		avaatar: "https://example.com/avatar/alice.jpg",
 		email: "Robert@example.com",
 		password: "password123",
 		createdAt: new Date(),
