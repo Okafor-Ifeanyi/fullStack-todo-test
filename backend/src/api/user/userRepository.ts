@@ -1,11 +1,12 @@
-import type { User } from "@/api/user/userModel";
+import { User } from "@/generated/prisma";
+
 
 export const users: User[] = [
 	{
 		id: 1,
 		name: "Alice",
 		email: "alice@example.com",
-		age: 42,
+		password: "password123",
 		createdAt: new Date(),
 		updatedAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days later
 	},
@@ -13,7 +14,7 @@ export const users: User[] = [
 		id: 2,
 		name: "Robert",
 		email: "Robert@example.com",
-		age: 21,
+		password: "password123",
 		createdAt: new Date(),
 		updatedAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days later
 	},

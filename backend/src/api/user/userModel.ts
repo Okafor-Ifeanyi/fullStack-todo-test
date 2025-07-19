@@ -10,10 +10,18 @@ export const UserSchema = z.object({
 	id: z.number(),
 	name: z.string(),
 	email: z.string().email(),
-	age: z.number(),
+	password: z.string(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
 });
+
+export const UpdateUserSchema = z.object({
+	name: z.string().optional(),
+}).strict();
+
+export const UserIdSchema = z.object({
+	id: z.string().optional(),
+}).strict();
 
 // Input Validation for 'GET users/:id' endpoint
 export const GetUserSchema = z.object({
