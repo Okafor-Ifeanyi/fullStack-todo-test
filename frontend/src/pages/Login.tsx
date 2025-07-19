@@ -12,7 +12,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginUser, { isLoading, isError }] = useLoginMutation();
+  const [loginUser, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   console.log("User from Redux state:", user);

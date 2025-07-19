@@ -26,7 +26,7 @@ export const taskApi = createApi({
     // Get a single task by ID
     getTaskById: builder.query<BaseResponse<Task>, number>({
       query: (id) => `/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Task', id }],
+      providesTags: ['Task'],
     }),
 
     // Create a new task
@@ -46,7 +46,7 @@ export const taskApi = createApi({
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Task', id }],
+      invalidatesTags: ["Task"],
     }),
 
     // Delete a task
