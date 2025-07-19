@@ -104,7 +104,7 @@ const Layout = () => {
 
           <div className="flex py-3 w-70 md:w-170 justify-between items-center md:justify-end">
             <h3 className="text-xl font-medium text-gray-800 mr-3">
-              {/* Hello {toTitleCase(user.name)} */}
+              Hello {toTitleCase(user.name)}
             </h3>
             <button
               className="rounded-lg border border-[#ACBCF0] bg-[#F1F4FF] p-1 md:p-2 md:mx-1"

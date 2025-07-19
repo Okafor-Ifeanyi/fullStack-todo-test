@@ -1,29 +1,9 @@
 import React, { useState } from "react";
 import { TaskTable } from "../components/Tasks/TaskTable";
-import { type Task, type TaskStatus } from "../types/task";
+import { type TaskStatus } from "../types/task";
 import { useGetTasksQuery } from "../services/todo.service";
 import { handleApiError } from "../lib/errorHandler";
 
-const mockTasks: Task[] = [
-  {
-    id: 1,
-    title: "Finish report",
-    description: "Complete the quarterly financial report",
-    status: "PENDING",
-    userId: 1,
-    createdAt: "2025-07-01T10:00:00Z",
-    updatedAt: "2025-07-02T10:00:00Z",
-  },
-  {
-    id: 2,
-    title: "Team meeting",
-    description: "Discuss sprint goals",
-    status: "PENDING",
-    userId: 1,
-    createdAt: "2025-07-01T10:00:00Z",
-    updatedAt: "2025-07-02T10:00:00Z",
-  },
-];
 
 const TasksView: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | TaskStatus>("all");
@@ -32,7 +12,7 @@ const TasksView: React.FC = () => {
     if (isError) {
         handleApiError(error);
     }
-    
+
     const tasks = data?.responseObject ?? [];
     // data?.responseObject
   const filteredTasks =
