@@ -21,6 +21,7 @@ const Layout = () => {
   const closeSidebar = () => setSidebarOpen(false);
 
   const user = useSelector((state: RootState) => state.auth.user);
+  console.log("User from Redux state:", user);
 
   const handleLogout = () => {
     localStorage.removeItem("token");

@@ -55,10 +55,12 @@ interface TaskTableProps {
 const columns = ['Title', 'Description', 'Status', 'Created At', 'Actions'];
 
 export const TaskTable: React.FC<TaskTableProps> = ({ tasks, onUpdate, onDelete }) => (
+    <div className="overflow-x-auto">
   <table className="table-auto w-full border-collapse mt-4">
     <TaskTableHeader columns={columns} />
     <tbody>
       {tasks.map(task => (
+        
         <TaskTableRow 
             key={task.id} 
             task={task} 
@@ -66,7 +68,9 @@ export const TaskTable: React.FC<TaskTableProps> = ({ tasks, onUpdate, onDelete 
             onDelete={onDelete}
         />
 
+
       ))}
     </tbody>
   </table>
+  </div>
 );
