@@ -2,10 +2,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { Task, TaskRequest, TaskUpdateRequest } from '../types/task';
 import type { BaseResponse } from '../types/general';
 
+const baseUrl = import.meta.env.VITE_APP_BASE_URL
 export const taskApi = createApi({
   reducerPath: 'taskApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8080/tasks',
+    baseUrl: `${baseUrl}/tasks`,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem('token');
       if (token) {

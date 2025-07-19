@@ -2,10 +2,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { AuthResponse, RegisterRequest, User } from '../types/general';
 
+const baseUrl = import.meta.env.VITE_APP_BASE_URL
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8080/users',
+    baseUrl: `${baseUrl}/users`,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem('token');
       if (token) {
