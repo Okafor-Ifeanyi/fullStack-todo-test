@@ -6,7 +6,7 @@ const userFromStorage = localStorage.getItem('user');
 const initialState = {
   isLoggedIn: !!localStorage.getItem('token'),
   user: userFromStorage ? JSON.parse(userFromStorage) : null,
-  token: null as string | null,
+  token: localStorage.getItem('token'),
 };
 
 const authSlice = createSlice({
@@ -29,12 +29,12 @@ const authSlice = createSlice({
 export const { login, logout } = authSlice.actions;
 
 export const loadAuthFromLocalStorage = () => (dispatch: any) => {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
-  
-    if (token && user) {
-      dispatch(login(JSON.parse(user)));
-    }
+  const token = localStorage.getItem('token');
+  const user = localStorage.getItem('user');
+
+  if (token && user) {
+    dispatch(login({ user: JSON.parse(user), token }));
+  }
 };
 
 export default authSlice.reducer;

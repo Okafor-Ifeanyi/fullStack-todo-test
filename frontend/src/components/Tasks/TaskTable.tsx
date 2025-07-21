@@ -51,7 +51,7 @@ interface TaskTableProps {
   onUpdate: (task: Task) => void;
   onDelete: (taskId: number) => void;
 }
-
+// console.log(taskId)
 const columns = ['Title', 'Description', 'Status', 'Created At', 'Actions'];
 
 export const TaskTable: React.FC<TaskTableProps> = ({ tasks, onUpdate, onDelete }) => (

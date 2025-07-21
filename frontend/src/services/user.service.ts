@@ -1,6 +1,6 @@
 // frontend/services/userApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { AuthResponse, RegisterRequest, User } from '../types/general';
+import type { AuthResponse, UpdateUserRequest, User } from '../types/general';
 
 const baseUrl = import.meta.env.VITE_APP_BASE_URL
 export const userApi = createApi({
@@ -32,7 +32,7 @@ export const userApi = createApi({
       providesTags: ['User'],
     }),
 
-    updateUser: builder.mutation<AuthResponse, { id: number; data: RegisterRequest }>({
+    updateUser: builder.mutation<AuthResponse, { id: number; data: UpdateUserRequest }>({
       query: ({ id, data }) => ({
         url: `/${id}`,
         method: 'PATCH',

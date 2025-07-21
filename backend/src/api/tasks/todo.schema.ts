@@ -15,8 +15,8 @@ export const CreateTodoSchema = z
 
 export const UpdateTodoSchema = z
   .object({
-    title: z.string().email().optional(),
-    description: z.number().optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
     status: z.enum(["PENDING", "IN_PROGRESS", "DONE"]).optional(),
   })
   .strict();

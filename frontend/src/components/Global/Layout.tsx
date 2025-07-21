@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { toTitleCase } from "../../lib/helpers";
+import type { User } from "../../types/general";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -20,8 +21,11 @@ const Layout = () => {
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  const user = useSelector((state: RootState) => state.auth.user);
-  console.log("User from Redux state:", user);
+  const user: User = useSelector((state: RootState) => state.auth.user);
+
+  if (user === undefined) {
+    return null
+  }
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -105,7 +109,7 @@ const Layout = () => {
 
           <div className="flex py-3 w-70 md:w-170 justify-between items-center md:justify-end">
             <h3 className="text-xl font-medium text-gray-800 mr-3">
-              Hello {toTitleCase(user.name)}
+              Hello { user ? toTitleCase(user.name) : "Guest"}
             </h3>
             <button
               className="rounded-lg border border-[#ACBCF0] bg-[#F1F4FF] p-1 md:p-2 md:mx-1"
@@ -130,7 +134,7 @@ const Layout = () => {
 
             <img
               className="md:mx-2 h-10 w-10 rounded-full object-cover"
-              src={"https://i.pravatar.cc/40"}
+              src={user.avaatar ? user.avaatar :  "https://i.pravatar.cc/40"}
               alt="User profile picture"
               aria-label="User profile"
             />

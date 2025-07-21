@@ -5,7 +5,7 @@ export function handleApiError(error: any) {
   const message = error?.data?.message;
   const message2 = error?.message
 
-  if (message.startsWith("Unauthorized")) {
+  if (message.startsWith("Unauthorized") || message2.startsWith("Unauthorized")) {
 
     toast.error("Network Error: Please check your internet connection.");
     localStorage.removeItem('token');
