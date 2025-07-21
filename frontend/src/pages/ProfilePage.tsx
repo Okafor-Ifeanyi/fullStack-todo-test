@@ -193,7 +193,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-function unwrap() {
-  throw new Error("Function not implemented.");
-}

@@ -39,7 +39,7 @@ const TasksView: React.FC = () => {
     setFormData({
       title: task.title,
       status: task.status,
-      description: task.description,
+      description: task.description ?? "",
     });
     setEditModalOpen(true);
   };
