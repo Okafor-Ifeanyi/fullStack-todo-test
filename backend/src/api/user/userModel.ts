@@ -10,6 +10,7 @@ export const UserSchema = z.object({
 	id: z.number(),
 	name: z.string(),
 	email: z.string().email(),
+	avataar: z.string().optional(),
 	password: z.string(),
 	createdAt: z.date(),
 	updatedAt: z.date(),
@@ -17,6 +18,7 @@ export const UserSchema = z.object({
 
 export const UpdateUserSchema = z.object({
 	name: z.string().optional(),
+	avaatar: z.string().optional(),
 }).strict();
 
 export const UserIdSchema = z.object({

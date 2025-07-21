@@ -1,55 +1,89 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import type { RootState } from "../state/store";
+import { useSelector } from "react-redux";
+import type { User } from "../types/general";
+import { LoaderIcon } from "../assets/svg/Icons";
+import {
+  useDeleteUserMutation,
+  useUpdateUserMutation,
+} from "../services/user.service";
+import { toast } from "sonner";
+import { handleApiError } from "../lib/errorHandler";
+import { uploadFile } from "../lib/uploads";
 
 const ProfilePage = () => {
-  const [avatar, setAvatar] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [name, setName] = useState('John Doe');
-  const [email, setEmail] = useState('johndoe@example.com');
-  const [showModal, setShowModal] = useState(false);
-  const [confirmText, setConfirmText] = useState('');
+  const user: User = useSelector((state: RootState) => state.auth.user);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [avatar, setAvatar] = useState<string | undefined>(
+    user?.avaatar || undefined
+  );
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [name, setName] = useState(user?.name || undefined);
+  const [isImgLoading, setIsImgLoading] = useState(false);
+  const [email, setEmail] = useState(user?.email || undefined);
+  const [showModal, setShowModal] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [updateUser, { isLoading: updateLoading }] = useUpdateUserMutation();
+  const [deleteUser, { isLoading: deleteLoading }] = useDeleteUserMutation();
+
+  console.log("User from Redux state:", user);
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setAvatar(file);
+      try {
+        setIsImgLoading(true);
+        const response = await uploadFile(file);
+        if (response?.secure_url) {
+          setAvatar(response.secure_url);
+          toast.success("Image uploaded successfully!");
+          setIsImgLoading(false);
+        } else {
+          toast.error("Image upload failed, try again!");
+          setIsImgLoading(false);
+        }
+      } catch (err) {
+        setIsImgLoading(false);
+        console.error("Image upload error:", err);
+        toast.error("Image upload failed, try again!");
+      }
       setAvatarPreview(URL.createObjectURL(file));
     }
   };
 
   const handleUpdate = async () => {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    if (avatar) formData.append('avatar', avatar);
-
     try {
-      await fetch('/api/user/update', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      alert('Profile updated!');
+      const response = await updateUser({
+        id: user?.id,
+        data: { name, avaatar: avatar },
+      }).unwrap();
+      if (response.success) {
+        toast.success("Profile updated!");
+      }
     } catch (err) {
-      alert('Update failed.');
+      console.error("Update failed:", err);
+      handleApiError(err);
     }
   };
 
   const handleDelete = async () => {
-    if (confirmText !== 'delete my account') return;
+    if (confirmText !== "delete my account") return;
     try {
-      await fetch('/api/user/delete', {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      alert('Account deleted.');
-      // logout / redirect
+      await deleteUser(user.id).unwrap();
+      alert("Account deleted.");
+      // TODO: logout or redirect to homepage
     } catch (err) {
-      alert('Account deletion failed.');
+      console.error("Account deletion failed:", err);
+      alert;
     }
+  };
+
+  const renderButtonContent = (title: string, loader: boolean) => {
+    if (loader) {
+      return <LoaderIcon width={20} height={20} className="text-center" />;
+    }
+
+    return title;
   };
 
   return (
@@ -58,7 +92,7 @@ const ProfilePage = () => {
         <label htmlFor="avatar-upload" className="cursor-pointer">
           <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-gray-300">
             <img
-              src={avatarPreview || '/default-avatar.png'}
+              src={avatarPreview || "/default-avatar.png"}
               alt="Avatar"
               className="w-full h-full object-cover"
             />
@@ -71,7 +105,9 @@ const ProfilePage = () => {
             className="hidden"
           />
         </label>
-        <p className="text-gray-500 mt-2 text-sm">Click image to change</p>
+        <p className="text-gray-500 mt-2 text-sm">
+          {isImgLoading ? `Uploading Image...` : "Click image to change"}
+        </p>
       </div>
 
       <div className="mt-6 space-y-4">
@@ -89,24 +125,27 @@ const ProfilePage = () => {
           <label className="block mb-1 text-sm font-medium">Email</label>
           <input
             type="email"
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded text-gray-400"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled
           />
         </div>
 
         <button
           onClick={handleUpdate}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          // className="w-full bg-blue-600 text-white mt-5 py-2 rounded flex items-center text-center hover:bg-blue-700"
+          className="w-full rounded bg-blue-600 p-2 font-semibold text-center items-center justify-center flex text-white hover:bg-blue-700"
+
         >
-          Update Profile
+          {renderButtonContent("Update Profile", updateLoading)}
         </button>
 
         <button
           onClick={() => setShowModal(true)}
-          className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 mt-4"
+          className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 "
         >
-          Delete My Account
+          {renderButtonContent("Delete My Account", deleteLoading)}
         </button>
       </div>
 
@@ -118,7 +157,8 @@ const ProfilePage = () => {
               Confirm Account Deletion
             </h2>
             <p className="text-sm mb-4">
-              To delete your account, type <strong>delete my account</strong> below:
+              To delete your account, type <strong>delete my account</strong>{" "}
+              below:
             </p>
             <input
               type="text"
@@ -134,12 +174,12 @@ const ProfilePage = () => {
                 Cancel
               </button>
               <button
-                disabled={confirmText !== 'delete my account'}
+                disabled={confirmText !== "delete my account"}
                 onClick={handleDelete}
                 className={`px-4 py-2 text-sm rounded text-white ${
-                  confirmText === 'delete my account'
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-red-300 cursor-not-allowed'
+                  confirmText === "delete my account"
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-red-300 cursor-not-allowed"
                 }`}
               >
                 Delete
