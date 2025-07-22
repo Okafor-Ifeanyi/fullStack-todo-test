@@ -17,7 +17,7 @@ const ProfilePage = () => {
   const [avatar, setAvatar] = useState<string | undefined>(
     user?.avaatar || undefined
   );
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>( user?.avaatar || null);
   const [name, setName] = useState(user?.name || undefined);
   const [isImgLoading, setIsImgLoading] = useState(false);
   const [email, setEmail] = useState(user?.email || undefined);
