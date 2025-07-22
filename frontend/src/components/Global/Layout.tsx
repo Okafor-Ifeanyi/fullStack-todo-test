@@ -23,8 +23,11 @@ const Layout = () => {
 
   const user: User = useSelector((state: RootState) => state.auth.user);
 
+  const name = user ? user.name : "";
+  const firstName = name.match(/^\S+/)?.[0] || "";
+
   if (user === undefined) {
-    return null
+    return null;
   }
 
   const handleLogout = () => {
@@ -74,7 +77,10 @@ const Layout = () => {
                   to={item.to}
                   icon={item.icon}
                   label={item.label}
-                  onClick={item.function}
+                  onClick={() => {
+                    closeSidebar();
+                    if (item.function) item.function();
+                  }}
                 />
               ))}{" "}
             </nav>
@@ -109,7 +115,7 @@ const Layout = () => {
 
           <div className="flex py-3 w-70 md:w-170 justify-between items-center md:justify-end">
             <h3 className="text-xl font-medium text-gray-800 mr-3">
-              Hello { user ? toTitleCase(user.name) : "Guest"}
+              Hello {user ? toTitleCase(firstName) : "Guest"}
             </h3>
             <button
               className="rounded-lg border border-[#ACBCF0] bg-[#F1F4FF] p-1 md:p-2 md:mx-1"
@@ -134,7 +140,7 @@ const Layout = () => {
 
             <img
               className="md:mx-2 h-10 w-10 rounded-full object-cover"
-              src={user.avaatar ? user.avaatar :  "https://i.pravatar.cc/40"}
+              src={user.avaatar ? user.avaatar : "https://i.pravatar.cc/40"}
               alt="User profile picture"
               aria-label="User profile"
             />
